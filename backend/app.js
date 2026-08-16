@@ -22,6 +22,7 @@
 // const uploadRoutes = require('./routes/upload');
 // const analyticsRoutes = require('./routes/analytics');
 // const dashboardRoutes = require('./routes/dashboard');
+// const contactRoutes = require('./routes/contact');
 
 // const app = express();
 
@@ -47,8 +48,7 @@
 // app.use(express.json({ limit: '10mb' }));
 // app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// // Rate limiter for all API routes
-// app.use('/api/', apiLimiter);
+// // Rate limiter — only for public contact/analytics (admin is exempt via auth)
 
 // // Static files for uploads
 // const uploadDir = process.env.UPLOAD_DEST || './uploads';
@@ -82,6 +82,7 @@
 // app.use('/api/upload', uploadRoutes);
 // app.use('/api/analytics', analyticsRoutes);
 // app.use('/api/dashboard', dashboardRoutes);
+// app.use('/api/contact', contactRoutes);
 
 // // 404 handler
 // app.use((req, res) => {
@@ -95,8 +96,6 @@
 // app.use(errorHandler);
 
 // module.exports = app;
-
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -133,10 +132,10 @@ app.use(helmet({
     : false,
 }));
 
-// CORS
+// CORS — allow all origins in production; localhost in development
 app.use(cors({
-  origin: process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',')
+  origin: process.env.NODE_ENV === 'production'
+    ? true // reflect requesting origin
     : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
