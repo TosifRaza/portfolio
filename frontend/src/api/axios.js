@@ -1,19 +1,3 @@
-// import axios from 'axios';
-
-// const api = axios.create({
-//   baseURL: 'http://localhost:5000/api',
-//   timeout: 10000,
-// });
-
-// api.interceptors.response.use(
-//   (response) => response.data,
-//   (error) => {
-//     const message = error.response?.data?.message || 'Something went wrong';
-//     return Promise.reject(new Error(message));
-//   }
-// );
-
-// export default api;
 import axios from 'axios';
 
 const api = axios.create({
@@ -38,7 +22,7 @@ api.interceptors.request.use(
 
 // Response interceptor - handle 401
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('admin_token');
